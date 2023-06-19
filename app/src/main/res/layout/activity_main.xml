@@ -6,7 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.john.waveview.WaveView
+        android:id="@+id/wave_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8BC34A"
+        app:above_wave_color="@android:color/white"
+        app:blow_wave_color="@android:color/white"
+        app:progress="80"
+        app:wave_height="little"
+        app:wave_hz="normal"
+        app:wave_length="middle" />
+
     <androidx.cardview.widget.CardView
+        app:layout_constraintStart_toEndOf="@id/log_cv"
         android:id="@+id/change_plant_cv"
         app:cardElevation="10dp"
         app:cardCornerRadius="100dp"
@@ -40,6 +53,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        app:layout_constraintStart_toEndOf="@+id/give_water_cv"
         android:id="@+id/log_cv"
         app:cardElevation="10dp"
         app:cardCornerRadius="100dp"
@@ -68,6 +82,85 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:text="기록"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        app:layout_constraintStart_toEndOf="@id/setting_cv"
+        android:id="@+id/give_water_cv"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintEnd_toStartOf="@id/log_cv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="60dp"
+        android:layout_height="60dp">
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:layout_margin="10dp"
+            android:background="@drawable/icon_water"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/give_water_name_cv"
+        app:cardCornerRadius="6dp"
+        app:cardBackgroundColor="@color/black"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@id/give_water_cv"
+        app:layout_constraintStart_toStartOf="@id/give_water_cv"
+        app:layout_constraintTop_toBottomOf="@+id/give_water_cv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textStyle="bold"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="물 주기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginStart="40dp"
+        android:id="@+id/setting_cv"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/give_water_cv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="60dp"
+        android:layout_height="60dp">
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/setting_name_cv"
+        app:cardCornerRadius="6dp"
+        app:cardBackgroundColor="@color/black"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@id/setting_cv"
+        app:layout_constraintStart_toStartOf="@id/setting_cv"
+        app:layout_constraintTop_toBottomOf="@+id/setting_cv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textStyle="bold"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="설정"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </androidx.cardview.widget.CardView>
