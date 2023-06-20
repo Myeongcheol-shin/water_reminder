@@ -11,9 +11,11 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.Observer
 import com.shino72.waterplant.R
 import com.shino72.waterplant.databinding.ActivityMainBinding
 import com.shino72.waterplant.dialog.SlideUpDialog
+import com.shino72.waterplant.global.MyApplication
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +44,22 @@ class MainActivity : AppCompatActivity() {
                 settingSlideUpPopup.show()
             }
         }
+
+        // observing
+        viewModel.apply {
+            now.observe(this@MainActivity, Observer {
+                binding.nowTv.text = it.toString()
+            })
+            goal.observe(this@MainActivity, Observer {
+                binding.goalTv.text = it.toString()
+            })
+            name.observe(this@MainActivity, Observer {
+                if(it != null) binding.plantNameTv.text = it.toString()
+            })
+            wave.observe(this@MainActivity, Observer {
+                binding.waveView.setProgress(it)
+            })
+        }
     }
 
     private fun initSlider()
@@ -63,9 +81,14 @@ class MainActivity : AppCompatActivity() {
                 binding.apply {
                     nowTv.text = nowDrink
                     goalTv.text = goalDrink
-                    val progress : Int = if(nowDrink.toInt() >= goalDrink.toInt()) 100 else (goalDrink.toInt() / nowDrink.toInt())
+                    var progress : Int = if(nowDrink == "0") 0 else (nowDrink.toInt() * 100) / goalDrink.toInt()
+                    if(progress > 100) progress = 100
                     waveView.setProgress(progress)
                 }
+
+                val prefs = MyApplication.pref
+                prefs.setNow(nowDrink.toInt())
+                prefs.setGoal(goalDrink.toInt())
                 settingSlideUpPopup.dismissAnim()
             }
         }
