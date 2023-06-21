@@ -1,6 +1,5 @@
 package com.shino72.waterplant.main
 
-import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -10,15 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.Window
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import com.bumptech.glide.Glide
 import com.shino72.waterplant.R
 import com.shino72.waterplant.databinding.ActivityMainBinding
 import com.shino72.waterplant.dialog.SlideUpDialog
@@ -30,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var settingContentView : View
     private lateinit var settingSlideUpPopup : SlideUpDialog
+    private lateinit var plantContentView : View
+    private lateinit var plantSlideUpPopup: SlideUpDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -43,7 +44,14 @@ class MainActivity : AppCompatActivity() {
             .setContentView(settingContentView)
             .create()
 
-        initSlider()
+        plantContentView = (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.layout_plant, null)
+        plantSlideUpPopup = SlideUpDialog.Builder(this)
+            .setContentView(plantContentView)
+            .create()
+
+
+        initSettingSlider()
+        initPlantSlider()
         initWaterDialog()
         initNameDialog()
 
@@ -53,6 +61,9 @@ class MainActivity : AppCompatActivity() {
                 settingContentView.findViewById<EditText>(R.id.now_et).setText(binding.nowTv.text)
                 settingContentView.findViewById<EditText>(R.id.goal_et).setText(binding.goalTv.text)
                 settingSlideUpPopup.show()
+            }
+            editPlantBtn.setOnClickListener {
+                plantSlideUpPopup.show()
             }
         }
 
@@ -70,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             })
             wave.observe(this@MainActivity, Observer {
                 binding.waveView.setProgress(it)
+                changePlantImage()
             })
         }
     }
@@ -121,6 +133,22 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setContentView(R.layout.dialog_give_water)
     }
 
+    private fun changePlantImage()
+    {
+        val plantProgress = viewModel.wave.value
+        var drawable = R.drawable.icon_seed
+        if(plantProgress in (0 until 30)) drawable = R.drawable.icon_seed
+        else if(plantProgress in (30 until  70)) drawable = R.drawable.icon_plant
+        else if(plantProgress in (70 until 100)) drawable = R.drawable.icon_not_rose
+        else drawable = R.drawable.icon_rose
+
+        Glide.with(this)
+            .load(drawable)
+            .into(binding.plantIv)
+    }
+
+
+
     private fun showGiveWaterDialog(view : View, dialog: AlertDialog)
     {
         dialog.show()
@@ -137,7 +165,7 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
         }
     }
-    private fun initSlider()
+    private fun initSettingSlider()
     {
         val cancelBtn = settingContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         val applyBtn = settingContentView.findViewById<AppCompatButton>(R.id.apply_btn)
@@ -167,6 +195,14 @@ class MainActivity : AppCompatActivity() {
                 viewModel.valueChange()
                 settingSlideUpPopup.dismissAnim()
             }
+        }
+    }
+
+    private fun initPlantSlider()
+    {
+        val cancelBtn = plantContentView.findViewById<AppCompatButton>(R.id.cancel_button)
+        cancelBtn.setOnClickListener {
+            plantSlideUpPopup.dismissAnim()
         }
     }
 }
