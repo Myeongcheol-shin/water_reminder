@@ -10,7 +10,9 @@ android {
     dataBinding {
         enabled = true
     }
-
+    viewBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.shino72.waterplant"
         minSdk 24
@@ -54,6 +56,12 @@ task wrapper(type: Wrapper) {
 }
 tasks.register("prepareKotlinBuildScriptModel"){}
 dependencies {
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // room db
+    def room_version = "2.5.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // wave view
     implementation 'com.github.john990:WaveView:v0.9'

@@ -3,6 +3,7 @@ package com.shino72.waterplant.main
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -11,16 +12,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.shino72.waterplant.Adapter.Plant
+import com.shino72.waterplant.Adapter.PlantListAdapter
 import com.shino72.waterplant.R
 import com.shino72.waterplant.databinding.ActivityMainBinding
 import com.shino72.waterplant.dialog.SlideUpDialog
 import com.shino72.waterplant.global.MyApplication
+import com.shino72.waterplant.paint.PaintActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingSlideUpPopup : SlideUpDialog
     private lateinit var plantContentView : View
     private lateinit var plantSlideUpPopup: SlideUpDialog
+    private lateinit var plantList : MutableList<Plant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,6 +162,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
         view.findViewById<AppCompatButton>(R.id.cancel_btn).setOnClickListener {
             dialog.dismiss()
+            //Toast.makeText(applicationContext, "${view.findViewById<TextView>(R.id.tv).text}", Toast.LENGTH_SHORT).show()
         }
         view.findViewById<AppCompatButton>(R.id.apply_btn).setOnClickListener {
             val prefs = MyApplication.pref
@@ -203,6 +212,41 @@ class MainActivity : AppCompatActivity() {
         val cancelBtn = plantContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         cancelBtn.setOnClickListener {
             plantSlideUpPopup.dismissAnim()
+        }
+
+        val plantListAdapter = PlantListAdapter()
+        val layoutManager = GridLayoutManager(this, 1)
+        with(plantContentView){
+            findViewById<RecyclerView>(R.id.rc).apply {
+                setHasFixedSize(true)
+                this.layoutManager = layoutManager
+                adapter = plantListAdapter
+            }
+        }
+
+        plantList = mutableListOf(Plant("장미"), Plant("해바라기"))
+        plantListAdapter.setItem(plantList)
+        plantListAdapter.setItemClickListener(object : PlantListAdapter.ItemClickListener {
+            override fun onClick(view: View, cbItem: Plant, position : Int) {
+                when(view.id)
+                {
+                    R.id.item_cb -> {
+                        Toast.makeText(applicationContext, "${cbItem.name}", Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.delete_btn -> {
+                        plantListAdapter.notifyItemRangeRemoved(0, plantList.size);
+                        Toast.makeText(applicationContext,position.toString(),Toast.LENGTH_SHORT).show()
+                        plantListAdapter.notifyItemRangeChanged(0, plantList.size-1)
+                        plantList.remove(cbItem)
+                    }
+                }
+            }
+        })
+
+        val addBtn = plantContentView.findViewById<AppCompatButton>(R.id.add_btn)
+        addBtn.setOnClickListener {
+            val intent = Intent(this,PaintActivity::class.java)
+            startActivity(intent)
         }
     }
 }
