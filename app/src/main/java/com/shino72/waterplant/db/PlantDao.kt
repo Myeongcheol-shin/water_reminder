@@ -18,4 +18,7 @@ public interface PlantDao{
     // 삭제 하기
     @Delete
     suspend fun delete(plant:PlantPicture)
+
+    @Query("DELETE FROM 'PlantPicture'")
+    suspend fun deleteAll()
 }

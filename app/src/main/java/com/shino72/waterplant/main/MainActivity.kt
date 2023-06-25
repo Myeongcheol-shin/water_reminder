@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,19 +26,23 @@ import com.shino72.waterplant.Adapter.Plant
 import com.shino72.waterplant.Adapter.PlantListAdapter
 import com.shino72.waterplant.R
 import com.shino72.waterplant.databinding.ActivityMainBinding
+import com.shino72.waterplant.db.AppDataBase
+import com.shino72.waterplant.db.PlantPicture
 import com.shino72.waterplant.dialog.SlideUpDialog
 import com.shino72.waterplant.global.MyApplication
 import com.shino72.waterplant.paint.PaintActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var settingContentView : View
-    private lateinit var settingSlideUpPopup : SlideUpDialog
-    private lateinit var plantContentView : View
+    private lateinit var settingContentView: View
+    private lateinit var settingSlideUpPopup: SlideUpDialog
+    private lateinit var plantContentView: View
     private lateinit var plantSlideUpPopup: SlideUpDialog
-    private lateinit var plantList : MutableList<Plant>
+    private lateinit var plantList: MutableList<Plant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +52,20 @@ class MainActivity : AppCompatActivity() {
 
 
         // slideView 동적 추가
-        settingContentView = (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.layout_setting, null)
+        settingContentView =
+            (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
+                R.layout.layout_setting,
+                null
+            )
         settingSlideUpPopup = SlideUpDialog.Builder(this)
             .setContentView(settingContentView)
             .create()
 
-        plantContentView = (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.layout_plant, null)
+        plantContentView =
+            (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
+                R.layout.layout_plant,
+                null
+            )
         plantSlideUpPopup = SlideUpDialog.Builder(this)
             .setContentView(plantContentView)
             .create()
@@ -84,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                 binding.goalTv.text = it.toString()
             })
             name.observe(this@MainActivity, Observer {
-                if(it != null) binding.plantNameTv.text = it.toString()
+                if (it != null) binding.plantNameTv.text = it.toString()
                 else binding.plantNameTv.text = "이름을 지어주세요"
             })
             wave.observe(this@MainActivity, Observer {
@@ -94,8 +107,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initNameDialog()
-    {
+    private fun initNameDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_name, null)
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)
@@ -108,8 +120,8 @@ class MainActivity : AppCompatActivity() {
         alertDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.setContentView(R.layout.dialog_give_water)
     }
-    private fun showEditNameDialog(view : View, dialog: AlertDialog)
-    {
+
+    private fun showEditNameDialog(view: View, dialog: AlertDialog) {
         dialog.show()
         view.findViewById<AppCompatButton>(R.id.cancel_btn).setOnClickListener {
             dialog.dismiss()
@@ -117,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         view.findViewById<AppCompatButton>(R.id.apply_btn).setOnClickListener {
             val prefs = MyApplication.pref
             val nameValue = view.findViewById<EditText>(R.id.name_et).text.toString()
-            if(nameValue != null){
+            if (nameValue != null) {
                 prefs.setName(nameValue)
                 viewModel.valueChange()
             }
@@ -126,8 +138,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun initWaterDialog()
-    {
+    private fun initWaterDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_give_water, null)
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)
@@ -141,13 +152,12 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setContentView(R.layout.dialog_give_water)
     }
 
-    private fun changePlantImage()
-    {
+    private fun changePlantImage() {
         val plantProgress = viewModel.wave.value
         var drawable = R.drawable.icon_seed
-        if(plantProgress in (0 until 30)) drawable = R.drawable.icon_seed
-        else if(plantProgress in (30 until  70)) drawable = R.drawable.icon_plant
-        else if(plantProgress in (70 until 100)) drawable = R.drawable.icon_not_rose
+        if (plantProgress in (0 until 30)) drawable = R.drawable.icon_seed
+        else if (plantProgress in (30 until 70)) drawable = R.drawable.icon_plant
+        else if (plantProgress in (70 until 100)) drawable = R.drawable.icon_not_rose
         else drawable = R.drawable.icon_rose
 
         Glide.with(this)
@@ -156,9 +166,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private fun showGiveWaterDialog(view : View, dialog: AlertDialog)
-    {
+    private fun showGiveWaterDialog(view: View, dialog: AlertDialog) {
         dialog.show()
         view.findViewById<AppCompatButton>(R.id.cancel_btn).setOnClickListener {
             dialog.dismiss()
@@ -167,15 +175,15 @@ class MainActivity : AppCompatActivity() {
         view.findViewById<AppCompatButton>(R.id.apply_btn).setOnClickListener {
             val prefs = MyApplication.pref
             val waterValue = view.findViewById<EditText>(R.id.give_et).text.toString()
-            if(waterValue != null && waterValue.toInt() > 0){
+            if (waterValue != null && waterValue.toInt() > 0) {
                 prefs.setNow(prefs.getNow() + waterValue.toInt())
                 viewModel.valueChange()
             }
             dialog.dismiss()
         }
     }
-    private fun initSettingSlider()
-    {
+
+    private fun initSettingSlider() {
         val cancelBtn = settingContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         val applyBtn = settingContentView.findViewById<AppCompatButton>(R.id.apply_btn)
 
@@ -188,13 +196,13 @@ class MainActivity : AppCompatActivity() {
             val nowDrink = settingContentView.findViewById<EditText>(R.id.now_et).text.toString()
             val goalDrink = settingContentView.findViewById<EditText>(R.id.goal_et).text.toString()
 
-            if(goalDrink == "0") Toast.makeText(this,"목표는 0이 될 수 없습니다",Toast.LENGTH_SHORT).show()
-            else
-            {
+            if (goalDrink == "0") Toast.makeText(this, "목표는 0이 될 수 없습니다", Toast.LENGTH_SHORT).show()
+            else {
                 binding.apply {
 
-                    var progress : Int = if(nowDrink == "0") 0 else (nowDrink.toInt() * 100) / goalDrink.toInt()
-                    if(progress > 100) progress = 100
+                    var progress: Int =
+                        if (nowDrink == "0") 0 else (nowDrink.toInt() * 100) / goalDrink.toInt()
+                    if (progress > 100) progress = 100
                     waveView.setProgress(progress)
                 }
 
@@ -207,8 +215,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initPlantSlider()
-    {
+    private fun initPlantSlider() {
         val cancelBtn = plantContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         cancelBtn.setOnClickListener {
             plantSlideUpPopup.dismissAnim()
@@ -216,27 +223,28 @@ class MainActivity : AppCompatActivity() {
 
         val plantListAdapter = PlantListAdapter()
         val layoutManager = GridLayoutManager(this, 1)
-        with(plantContentView){
+        with(plantContentView) {
             findViewById<RecyclerView>(R.id.rc).apply {
                 setHasFixedSize(true)
                 this.layoutManager = layoutManager
                 adapter = plantListAdapter
             }
         }
-
         plantList = mutableListOf(Plant("장미"), Plant("해바라기"))
         plantListAdapter.setItem(plantList)
         plantListAdapter.setItemClickListener(object : PlantListAdapter.ItemClickListener {
-            override fun onClick(view: View, cbItem: Plant, position : Int) {
-                when(view.id)
-                {
+            override fun onClick(view: View, cbItem: Plant, position: Int) {
+                when (view.id) {
                     R.id.item_cb -> {
-                        Toast.makeText(applicationContext, "${cbItem.name}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "${cbItem.name}", Toast.LENGTH_SHORT)
+                            .show()
                     }
+
                     R.id.delete_btn -> {
                         plantListAdapter.notifyItemRangeRemoved(0, plantList.size);
-                        Toast.makeText(applicationContext,position.toString(),Toast.LENGTH_SHORT).show()
-                        plantListAdapter.notifyItemRangeChanged(0, plantList.size-1)
+                        Toast.makeText(applicationContext, position.toString(), Toast.LENGTH_SHORT)
+                            .show()
+                        plantListAdapter.notifyItemRangeChanged(0, plantList.size - 1)
                         plantList.remove(cbItem)
                     }
                 }
@@ -245,7 +253,7 @@ class MainActivity : AppCompatActivity() {
 
         val addBtn = plantContentView.findViewById<AppCompatButton>(R.id.add_btn)
         addBtn.setOnClickListener {
-            val intent = Intent(this,PaintActivity::class.java)
+            val intent = Intent(this, PaintActivity::class.java)
             startActivity(intent)
         }
     }

@@ -33,4 +33,13 @@ class PreferenceUtil(context : Context) {
     {
         prefs.edit().putString("date", date).apply()
     }
+
+    fun getUpdateStatus() : Boolean
+    {
+        return prefs.getBoolean("status",false)
+    }
+    fun setUpdateStatus(status : Boolean)
+    {
+        prefs.edit().putBoolean("status", status).apply()
+    }
 }
