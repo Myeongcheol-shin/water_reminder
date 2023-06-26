@@ -1,11 +1,10 @@
 package com.shino72.waterplant.main
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,12 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,8 +28,8 @@ import com.shino72.waterplant.db.PlantPicture
 import com.shino72.waterplant.dialog.SlideUpDialog
 import com.shino72.waterplant.global.MyApplication
 import com.shino72.waterplant.paint.PaintActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.math.sin
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,13 +40,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var plantContentView: View
     private lateinit var plantSlideUpPopup: SlideUpDialog
     private lateinit var plantList: MutableList<Plant>
+    private var AppDataBase : AppDataBase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         binding.main = viewModel
-
 
         // slideView 동적 추가
         settingContentView =
@@ -71,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             .create()
 
 
+        initRoomDB()
         initSettingSlider()
         initPlantSlider()
         initWaterDialog()
@@ -101,10 +99,17 @@ class MainActivity : AppCompatActivity() {
                 else binding.plantNameTv.text = "이름을 지어주세요"
             })
             wave.observe(this@MainActivity, Observer {
+                reLoadImage(it)
+            })
+            progress.observe(this@MainActivity, Observer {
                 binding.waveView.setProgress(it)
-                changePlantImage()
             })
         }
+    }
+
+    private fun initRoomDB()
+    {
+        AppDataBase = com.shino72.waterplant.db.AppDataBase.getInstance(this)
     }
 
     private fun initNameDialog() {
@@ -152,19 +157,6 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setContentView(R.layout.dialog_give_water)
     }
 
-    private fun changePlantImage() {
-        val plantProgress = viewModel.wave.value
-        var drawable = R.drawable.icon_seed
-        if (plantProgress in (0 until 30)) drawable = R.drawable.icon_seed
-        else if (plantProgress in (30 until 70)) drawable = R.drawable.icon_plant
-        else if (plantProgress in (70 until 100)) drawable = R.drawable.icon_not_rose
-        else drawable = R.drawable.icon_rose
-
-        Glide.with(this)
-            .load(drawable)
-            .into(binding.plantIv)
-    }
-
 
     private fun showGiveWaterDialog(view: View, dialog: AlertDialog) {
         dialog.show()
@@ -186,6 +178,9 @@ class MainActivity : AppCompatActivity() {
     private fun initSettingSlider() {
         val cancelBtn = settingContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         val applyBtn = settingContentView.findViewById<AppCompatButton>(R.id.apply_btn)
+
+        settingContentView.findViewById<EditText>(R.id.goal_et).setText(MyApplication.pref.getGoal().toString())
+        settingContentView.findViewById<EditText>(R.id.now_et).setText(MyApplication.pref.getNow().toString())
 
         cancelBtn.setOnClickListener {
             settingSlideUpPopup.dismissAnim()
@@ -214,6 +209,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun reLoadImage(progress : Int)
+    {
+        runBlocking {
+            var singleData : PlantPicture? = null
+            var drawable : Bitmap? = null
+            withContext(this.coroutineContext){
+                singleData = AppDataBase!!.PlantDao().loadSingleData(MyApplication.pref.getSelectedId().toString())
+            }
+            withContext(this.coroutineContext){
+                when(progress)
+                {
+                    1 -> {
+                        drawable = singleData!!.image1
+                    }
+                    2 -> {
+                        drawable = singleData!!.image2
+                    }
+                    3 -> {
+                        drawable = singleData!!.image3
+                    }
+                    4 -> {
+                        drawable = singleData!!.image4
+                    }
+                }
+                binding.plantNameTv.text = singleData!!.name
+                Glide.with(applicationContext)
+                    .load(drawable)
+                    .into(binding.plantIv)
+            }
+        }
+    }
 
     private fun initPlantSlider() {
         val cancelBtn = plantContentView.findViewById<AppCompatButton>(R.id.cancel_button)
@@ -223,6 +249,7 @@ class MainActivity : AppCompatActivity() {
 
         val plantListAdapter = PlantListAdapter()
         val layoutManager = GridLayoutManager(this, 1)
+        plantList = mutableListOf()
         with(plantContentView) {
             findViewById<RecyclerView>(R.id.rc).apply {
                 setHasFixedSize(true)
@@ -230,14 +257,37 @@ class MainActivity : AppCompatActivity() {
                 adapter = plantListAdapter
             }
         }
-        plantList = mutableListOf(Plant("장미"), Plant("해바라기"))
-        plantListAdapter.setItem(plantList)
+        runBlocking {
+            withContext(this.coroutineContext) {
+
+                val dao = AppDataBase!!.PlantDao()
+                dao.getAll().forEach {
+                    plantList.add(
+                        Plant(
+                            it.name,
+                            it.image1,
+                            it.image2,
+                            it.image3,
+                            it.image4,
+                            it.uid
+                        )
+                    )
+                }
+            }
+            withContext(this.coroutineContext)
+            {
+                plantListAdapter.setItem(plantList)
+            }
+        }
         plantListAdapter.setItemClickListener(object : PlantListAdapter.ItemClickListener {
             override fun onClick(view: View, cbItem: Plant, position: Int) {
                 when (view.id) {
                     R.id.item_cb -> {
                         Toast.makeText(applicationContext, "${cbItem.name}", Toast.LENGTH_SHORT)
                             .show()
+
+                        MyApplication.pref.setSelectedId(cbItem.id)
+                        reLoadImage(progress = viewModel.wave.value!!)
                     }
 
                     R.id.delete_btn -> {

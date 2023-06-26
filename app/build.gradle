@@ -60,6 +60,7 @@ tasks.register("prepareKotlinBuildScriptModel"){}
 
 dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.room:room-common:2.4.2'
 
     // room db
     def room_version = "2.5.0"

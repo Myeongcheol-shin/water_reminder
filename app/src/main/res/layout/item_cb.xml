@@ -50,6 +50,10 @@
                 app:cardCornerRadius="100dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </androidx.cardview.widget.CardView>
             <View
                 android:layout_weight="1"
@@ -63,6 +67,10 @@
                 app:cardCornerRadius="100dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </androidx.cardview.widget.CardView>
             <View
                 android:layout_weight="1"
@@ -76,6 +84,10 @@
                 app:cardCornerRadius="100dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </androidx.cardview.widget.CardView>
             <View
                 android:layout_weight="1"
@@ -89,6 +101,10 @@
                 app:cardCornerRadius="100dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
         <LinearLayout

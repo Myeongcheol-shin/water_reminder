@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.icu.text.SimpleDateFormat
 import android.provider.Settings.Global
-import androidx.room.Room
 import com.shino72.waterplant.Adapter.Plant
 import com.shino72.waterplant.R
 import com.shino72.waterplant.db.AppDataBase
@@ -47,6 +46,7 @@ class MyApplication : Application() {
     }
 
     // 식물 데이터 저장하기
+    @SuppressLint("UseCompatLoadingForDrawables")
     private suspend fun setData() {
         if (!pref.getUpdateStatus()) {
             val db = AppDataBase.getInstance(this)
@@ -56,6 +56,15 @@ class MyApplication : Application() {
                     name = "꼬치",
                     image1 = (getDrawable(R.drawable.icon_seed) as BitmapDrawable).bitmap,
                     image2 = (getDrawable(R.drawable.icon_plant) as BitmapDrawable).bitmap,
+                    image3 = (getDrawable(R.drawable.icon_not_rose) as BitmapDrawable).bitmap,
+                    image4 = (getDrawable(R.drawable.icon_rose) as BitmapDrawable).bitmap
+                )
+            )
+            db!!.PlantDao().insertDB(
+                PlantPicture(
+                    name = "꼬치2",
+                    image2 = (getDrawable(R.drawable.icon_seed) as BitmapDrawable).bitmap,
+                    image1 = (getDrawable(R.drawable.icon_plant) as BitmapDrawable).bitmap,
                     image3 = (getDrawable(R.drawable.icon_not_rose) as BitmapDrawable).bitmap,
                     image4 = (getDrawable(R.drawable.icon_rose) as BitmapDrawable).bitmap
                 )

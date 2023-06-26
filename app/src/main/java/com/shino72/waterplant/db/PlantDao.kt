@@ -11,6 +11,9 @@ public interface PlantDao{
     @Query("SELECT * FROM 'PlantPicture'")
     suspend fun getAll() : List<PlantPicture>
 
+    @Query("SELECT * FROM 'PlantPicture' WHERE uid=:uid ")
+    suspend fun loadSingleData(uid: String) : PlantPicture?
+
     // 삽입 하기
     @Insert
     suspend fun insertDB(plant: PlantPicture)

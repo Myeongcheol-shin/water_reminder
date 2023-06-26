@@ -42,4 +42,13 @@ class PreferenceUtil(context : Context) {
     {
         prefs.edit().putBoolean("status", status).apply()
     }
+
+    fun setSelectedId(id : Int)
+    {
+        prefs.edit().putInt("id",id).apply()
+    }
+    fun getSelectedId() : Int
+    {
+        return prefs.getInt("id",0)
+    }
 }
