@@ -2,7 +2,6 @@ package com.shino72.waterplant.paint
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.shino72.waterplant.R
 import com.shino72.waterplant.databinding.ActivityPaintBinding
 
 class PaintActivity : AppCompatActivity() {

@@ -3,7 +3,6 @@ package com.shino72.waterplant.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide.init
 import com.shino72.waterplant.global.MyApplication
 
 class MainViewModel : ViewModel() {

@@ -13,10 +13,12 @@
         android:theme="@style/Theme.Waterplant"
         tools:targetApi="31" >
         <activity
-            android:name=".paint.PaintActivity"
-            android:exported="false" />
+            android:name=".ui.calender.CalenderActivity"
+            android:exported="false"
+            android:label="@string/title_activity_calender"
+            android:theme="@style/Theme.Waterplant.NoActionBar" />
         <activity
-            android:name=".PlantListActivity"
+            android:name=".paint.PaintActivity"
             android:exported="false" />
         <activity
             android:name=".main.MainActivity"

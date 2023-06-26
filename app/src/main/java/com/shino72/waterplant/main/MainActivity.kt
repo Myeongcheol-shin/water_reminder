@@ -22,19 +22,18 @@ import com.bumptech.glide.Glide
 import com.shino72.waterplant.Adapter.Plant
 import com.shino72.waterplant.Adapter.PlantListAdapter
 import com.shino72.waterplant.R
-import com.shino72.waterplant.databinding.ActivityMainBinding
 import com.shino72.waterplant.db.AppDataBase
 import com.shino72.waterplant.db.PlantPicture
 import com.shino72.waterplant.dialog.SlideUpDialog
 import com.shino72.waterplant.global.MyApplication
+import com.shino72.waterplant.ui.calender.CalenderActivity
 import com.shino72.waterplant.paint.PaintActivity
 import kotlinx.coroutines.*
-import kotlin.math.sin
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { com.shino72.waterplant.databinding.ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var settingContentView: View
     private lateinit var settingSlideUpPopup: SlideUpDialog
     private lateinit var plantContentView: View
@@ -67,8 +66,8 @@ class MainActivity : AppCompatActivity() {
             .setContentView(plantContentView)
             .create()
 
-
         initRoomDB()
+
         initSettingSlider()
         initPlantSlider()
         initWaterDialog()
@@ -83,6 +82,11 @@ class MainActivity : AppCompatActivity() {
             }
             editPlantBtn.setOnClickListener {
                 plantSlideUpPopup.show()
+            }
+
+            calBtn.setOnClickListener {
+                val calIntent = Intent(this@MainActivity, CalenderActivity::class.java)
+                startActivity(calIntent)
             }
         }
 
@@ -214,10 +218,10 @@ class MainActivity : AppCompatActivity() {
         runBlocking {
             var singleData : PlantPicture? = null
             var drawable : Bitmap? = null
-            withContext(this.coroutineContext){
+            withContext(coroutineContext) {
                 singleData = AppDataBase!!.PlantDao().loadSingleData(MyApplication.pref.getSelectedId().toString())
             }
-            withContext(this.coroutineContext){
+            withContext(coroutineContext){
                 when(progress)
                 {
                     1 -> {

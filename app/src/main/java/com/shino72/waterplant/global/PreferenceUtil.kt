@@ -49,6 +49,6 @@ class PreferenceUtil(context : Context) {
     }
     fun getSelectedId() : Int
     {
-        return prefs.getInt("id",0)
+        return prefs.getInt("id",1)
     }
 }

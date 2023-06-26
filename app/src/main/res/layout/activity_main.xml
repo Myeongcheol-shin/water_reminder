@@ -76,6 +76,12 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="60dp"
             android:layout_height="60dp">
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/cal_btn"
+                android:layout_margin="10dp"
+                android:background="@drawable/icon_calender"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
