@@ -141,6 +141,7 @@ class CalenderActivity : AppCompatActivity() {
 
         binding.chartWeek.data = data
     }
+    fun hello() {}
     class LabelCustomFormatter : ValueFormatter() {
         private var index = 0
 
