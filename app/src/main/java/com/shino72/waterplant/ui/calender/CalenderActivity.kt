@@ -36,6 +36,7 @@ class CalenderActivity : AppCompatActivity() {
 
     private data class CalView(val cv : CardView, val ll : LinearLayout, val ib : ImageButton, val tv: TextView)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityCalenderBinding.inflate(layoutInflater)
