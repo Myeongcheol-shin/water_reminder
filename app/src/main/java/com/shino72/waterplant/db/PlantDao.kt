@@ -1,9 +1,6 @@
 package com.shino72.waterplant.db
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 public interface PlantDao{
@@ -14,9 +11,18 @@ public interface PlantDao{
     @Query("SELECT * FROM 'PlantPicture' WHERE uid=:uid ")
     suspend fun loadSingleData(uid: String) : PlantPicture?
 
+    @Query("SELECT * FROM 'Calendar'")
+    suspend fun getAllCal() : List<Calendar>
+
+    @Update
+    suspend fun updateCal(cal:Calendar)
     // 삽입 하기
     @Insert
     suspend fun insertDB(plant: PlantPicture)
+
+    @Insert
+    suspend fun insertWaterAll(cal : Calendar)
+
 
     // 삭제 하기
     @Delete

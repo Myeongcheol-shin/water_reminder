@@ -8,12 +8,13 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PlantPicture::class], version = 1, exportSchema = false)
+@Database(entities = [PlantPicture::class, Calendar::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDataBase : RoomDatabase() {
-    abstract fun PlantDao() : PlantDao
+    abstract fun PlantDao(): PlantDao
+
     companion object {
-        private var instance : AppDataBase? = null
+        private var instance: AppDataBase? = null
 
         @Synchronized
         fun getInstance(context: Context): AppDataBase? {
@@ -23,11 +24,24 @@ abstract class AppDataBase : RoomDatabase() {
                     AppDataBase::class.java,
                     "database-contacts"
                 )
+                    .addMigrations(MIGRATION_1_2)
                     .allowMainThreadQueries()
                     .build()
             }
             return instance
         }
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE Calendar (" +
+                            "uid INTEGER NOT NULL, " +
+                            "Year INTEGER NOT NULL, " +
+                            "Month INTEGER NOT NULL, " +
+                            "Day INTEGER NOT NULL, " +
+                            "Size INTEGER NOT NULL, " +
+                            "PRIMARY KEY(uid))"
+                );
+            }
+        }
     }
-
 }

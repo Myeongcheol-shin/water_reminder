@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".main.MainActivity">
-
         <com.john.waveview.WaveView
             android:id="@+id/wave_view"
             android:layout_width="match_parent"

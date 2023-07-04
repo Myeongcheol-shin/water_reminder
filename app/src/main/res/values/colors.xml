@@ -13,4 +13,11 @@
     <color name="dark_green">#7FB343</color>
     <color name="yellow">#FDDE51</color>
     <color name="bg">#7CAD87</color>
+    <color name="cr_mon">#E57274</color>
+    <color name="cr_tue">#FC8969</color>
+    <color name="cr_wed">#FED258</color>
+    <color name="cr_thu">#C0DF9D</color>
+    <color name="cr_fri">#63B4F5</color>
+    <color name="cr_sat">#7A84CC</color>
+    <color name="cr_sun">#AA46BD</color>
 </resources>
