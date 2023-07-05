@@ -26,7 +26,6 @@ public interface PlantDao{
     @Insert
     suspend fun insertWaterAll(cal : Calendar)
 
-
     // 삭제 하기
     @Delete
     suspend fun delete(plant:PlantPicture)

@@ -30,6 +30,9 @@ class Calendar {
         return dateFormat.format(cal.time)
     }
 
+    fun nowDate() : String {
+        return dateFormat.format(cal.time)
+    }
     private fun getNw() : Int {
         return cal.get(Calendar.DAY_OF_WEEK)
     }

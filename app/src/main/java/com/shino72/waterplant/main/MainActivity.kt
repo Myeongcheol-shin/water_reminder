@@ -28,18 +28,23 @@ import com.shino72.waterplant.dialog.SlideUpDialog
 import com.shino72.waterplant.global.MyApplication
 import com.shino72.waterplant.ui.calender.CalenderActivity
 import com.shino72.waterplant.paint.PaintActivity
+import com.shino72.waterplant.ui.calender.Calendar
 import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
-    private val binding by lazy { com.shino72.waterplant.databinding.ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy {
+        com.shino72.waterplant.databinding.ActivityMainBinding.inflate(
+            layoutInflater
+        )
+    }
     private lateinit var settingContentView: View
     private lateinit var settingSlideUpPopup: SlideUpDialog
     private lateinit var plantContentView: View
     private lateinit var plantSlideUpPopup: SlideUpDialog
     private lateinit var plantList: MutableList<Plant>
-    private var AppDataBase : AppDataBase? = null
+    private var AppDataBase: AppDataBase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,8 +116,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initRoomDB()
-    {
+    private fun initRoomDB() {
         AppDataBase = com.shino72.waterplant.db.AppDataBase.getInstance(this)
     }
 
@@ -172,7 +176,9 @@ class MainActivity : AppCompatActivity() {
             val prefs = MyApplication.pref
             val waterValue = view.findViewById<EditText>(R.id.give_et).text.toString()
             if (waterValue != null && waterValue.toInt() > 0) {
-                prefs.setNow(prefs.getNow() + waterValue.toInt())
+                val plusWater = prefs.getNow() + waterValue.toInt()
+                prefs.setNow(plusWater)
+                updateWaterDB(plusWater)
                 viewModel.valueChange()
             }
             dialog.dismiss()
@@ -183,8 +189,10 @@ class MainActivity : AppCompatActivity() {
         val cancelBtn = settingContentView.findViewById<AppCompatButton>(R.id.cancel_button)
         val applyBtn = settingContentView.findViewById<AppCompatButton>(R.id.apply_btn)
 
-        settingContentView.findViewById<EditText>(R.id.goal_et).setText(MyApplication.pref.getGoal().toString())
-        settingContentView.findViewById<EditText>(R.id.now_et).setText(MyApplication.pref.getNow().toString())
+        settingContentView.findViewById<EditText>(R.id.goal_et)
+            .setText(MyApplication.pref.getGoal().toString())
+        settingContentView.findViewById<EditText>(R.id.now_et)
+            .setText(MyApplication.pref.getNow().toString())
 
         cancelBtn.setOnClickListener {
             settingSlideUpPopup.dismissAnim()
@@ -208,31 +216,35 @@ class MainActivity : AppCompatActivity() {
                 val prefs = MyApplication.pref
                 prefs.setNow(nowDrink.toInt())
                 prefs.setGoal(goalDrink.toInt())
+                updateWaterDB(nowDrink.toInt())
                 viewModel.valueChange()
                 settingSlideUpPopup.dismissAnim()
             }
         }
     }
-    private fun reLoadImage(progress : Int)
-    {
+
+    private fun reLoadImage(progress: Int) {
         runBlocking {
-            var singleData : PlantPicture? = null
-            var drawable : Bitmap? = null
+            var singleData: PlantPicture? = null
+            var drawable: Bitmap? = null
             withContext(coroutineContext) {
-                singleData = AppDataBase!!.PlantDao().loadSingleData(MyApplication.pref.getSelectedId().toString())
+                singleData = AppDataBase!!.PlantDao()
+                    .loadSingleData(MyApplication.pref.getSelectedId().toString())
             }
-            withContext(coroutineContext){
-                when(progress)
-                {
+            withContext(coroutineContext) {
+                when (progress) {
                     1 -> {
                         drawable = singleData!!.image1
                     }
+
                     2 -> {
                         drawable = singleData!!.image2
                     }
+
                     3 -> {
                         drawable = singleData!!.image3
                     }
+
                     4 -> {
                         drawable = singleData!!.image4
                     }
@@ -309,6 +321,20 @@ class MainActivity : AppCompatActivity() {
         addBtn.setOnClickListener {
             val intent = Intent(this, PaintActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun updateWaterDB(water : Int) {
+        val nowDate = Calendar().nowDate().split("-")
+        if(nowDate.size != 3) return
+        CoroutineScope(Dispatchers.Default).launch {
+            val data = AppDataBase!!.PlantDao().getSingleCal(nowDate[0], nowDate[1], nowDate[2])
+            if(data == null){
+                AppDataBase!!.PlantDao().insertWaterAll(com.shino72.waterplant.db.Calendar(Year = nowDate[0].toInt(), Month = nowDate[1].toInt(), Day = nowDate[2].toInt(), water))
+            }
+            else{
+                AppDataBase!!.PlantDao().updateCal(com.shino72.waterplant.db.Calendar(Year = nowDate[0].toInt(), Month = nowDate[1].toInt(), Day = nowDate[2].toInt(), water))
+            }
         }
     }
 }
