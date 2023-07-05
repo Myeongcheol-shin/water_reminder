@@ -3,6 +3,11 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
+        <entry key="imageWizard">
+          <value>
+            <PersistentState />
+          </value>
+        </entry>
         <entry key="vectorWizard">
           <value>
             <PersistentState>
@@ -18,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/edit/baseline_edit_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../android/icons/material/materialicons/calendar_month/baseline_calendar_month_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,9 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ff5d5d" />
                             <entry key="opacityPercent" value="83" />
-                            <entry key="outputName" value="icon_edit" />
+                            <entry key="outputName" value="icon_calender" />
                             <entry key="sourceFile" value="C:\Users\Public\shino72\waterplant\app" />
                           </map>
                         </option>

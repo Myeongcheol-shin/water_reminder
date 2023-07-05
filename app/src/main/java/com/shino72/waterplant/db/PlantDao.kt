@@ -8,6 +8,9 @@ public interface PlantDao{
     @Query("SELECT * FROM 'PlantPicture'")
     suspend fun getAll() : List<PlantPicture>
 
+    @Query("SELECT * FROM 'Calendar' WHERE (Year =:year AND Month =:month) AND Day =:day")
+    suspend fun getSingleCal(year : String, month : String, day : String) : Calendar?
+
     @Query("SELECT * FROM 'PlantPicture' WHERE uid=:uid ")
     suspend fun loadSingleData(uid: String) : PlantPicture?
 
