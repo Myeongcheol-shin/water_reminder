@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -24,6 +25,7 @@ class WeekFragment : Fragment() {
     private lateinit var binding: FragmentWeekBinding
     private lateinit var calArray : MutableList<BarEntry>
     private lateinit var colorList : List<Int>
+    private lateinit var dateList : MutableList<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +43,7 @@ class WeekFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.cr_sat),
         )
         calArray = mutableListOf()
+        dateList = mutableListOf()
 
         val customBarChartRender = CustomBarChartRender(binding.chartWeek,binding.chartWeek.animator,binding.chartWeek.viewPortHandler)
         binding.chartWeek.renderer = customBarChartRender
@@ -55,6 +58,7 @@ class WeekFragment : Fragment() {
         CoroutineScope(Dispatchers.Default).launch {
             val dao = appDataBase?.PlantDao()
             val data = Calendar().getDateList()
+            dateList.addAll(data)
             data.forEachIndexed { index, s ->
                 val splitS = s.split("-")
                 val rtc = dao?.getSingleCal(splitS[0], splitS[1], splitS[2])
@@ -63,10 +67,6 @@ class WeekFragment : Fragment() {
                 }
                 else calArray.add(BarEntry(index.toFloat(), 0f))
             }
-            while (calArray.size < 7){
-                calArray.add(BarEntry(calArray.size.toFloat(), 0f))
-            }
-
             val set = BarDataSet(calArray, "내용없음")
                 .apply {
                     valueFormatter = WaterCustomFormatter()
@@ -93,7 +93,6 @@ class WeekFragment : Fragment() {
     {
         binding.chartWeek.run {
             setDrawBarShadow(true) // 그래프 그림자
-            setTouchEnabled(false) // 차트 터치 막기
             setDrawValueAboveBar(true) // 입력?값이 차트 위or아래에 그려질 건지 (true=위, false=아래)
             setPinchZoom(false) // 두손가락으로 줌 설정
             setDrawGridBackground(false) // 격자구조
@@ -109,8 +108,9 @@ class WeekFragment : Fragment() {
                 setDrawGridLines(false) // 격자구조
                 granularity = 1f // 간격 설정
                 setDrawAxisLine(false) // 그림
-                textSize = 12f // 라벨 크기
+                textSize = 11f // 라벨 크기
                 textColor = Color.BLACK
+                yOffset = 2f
             }
 
 
@@ -132,6 +132,12 @@ class WeekFragment : Fragment() {
 
             animateY(1500) // y축 애니메이션
             animateX(1000) // x축 애니메이션
+
+            // 마커 설정
+
+            val markerView= CustomMarkerView(requireContext(), layout = R.layout.marker_view, dateList)
+            markerView.chartView = binding.chartWeek
+            this.marker = markerView
         }
 
         getDBallData()
