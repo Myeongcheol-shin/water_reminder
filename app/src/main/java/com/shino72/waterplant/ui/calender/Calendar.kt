@@ -7,7 +7,6 @@ import java.util.Locale
 class Calendar {
     private var cal = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
-
     fun getWeekDateList() : List<String> {
         cal.add(Calendar.DATE, -(getNw() - 1))
         val tmpCal = cal

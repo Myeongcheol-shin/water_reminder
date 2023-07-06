@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.calender.YearFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.calender.WeekFragment">
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/left_btn"
+        android:background="@drawable/icon_left"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/drink_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/drink_tv"
+        app:layout_constraintTop_toTopOf="@+id/drink_tv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/right_btn"
+        android:background="@drawable/icon_right"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/drink_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/drink_tv"
+        app:layout_constraintTop_toTopOf="@+id/drink_tv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
     <TextView
+        android:gravity="center"
+        android:id="@+id/drink_tv"
+        app:layout_constraintVertical_bias="0.7"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chart_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.github.mikephil.charting.charts.BarChart
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/chart_week"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="year" />
-</FrameLayout>
+        android:layout_height="300dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

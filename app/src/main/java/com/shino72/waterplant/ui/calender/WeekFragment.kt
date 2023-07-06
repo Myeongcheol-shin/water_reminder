@@ -186,6 +186,8 @@ class WeekFragment : Fragment() {
                 textSize = 11f // 라벨 크기
                 textColor = Color.BLACK
                 yOffset = 2f
+                setScaleEnabled(false)
+
             }
 
 

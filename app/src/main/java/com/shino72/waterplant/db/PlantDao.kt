@@ -17,6 +17,9 @@ public interface PlantDao{
     @Query("SELECT * FROM 'Calendar'")
     suspend fun getAllCal() : List<Calendar>
 
+    @Query("SELECT SUM(Size) FROM 'Calendar' WHERE Year =:year AND Month =:month")
+    suspend fun getMonthSingle(year: String, month: String) : String
+
     @Update
     suspend fun updateCal(cal:Calendar)
     // 삽입 하기
