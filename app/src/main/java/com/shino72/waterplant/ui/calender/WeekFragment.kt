@@ -1,12 +1,15 @@
 package com.shino72.waterplant.ui.calender
 
 import CustomBarChartRender
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
 import com.github.mikephil.charting.components.XAxis
@@ -23,9 +26,11 @@ import kotlinx.coroutines.launch
 
 class WeekFragment : Fragment() {
     private lateinit var binding: FragmentWeekBinding
-    private lateinit var calArray : MutableList<BarEntry>
-    private lateinit var colorList : List<Int>
-    private lateinit var dateList : MutableList<String>
+    private lateinit var calArray: MutableList<BarEntry>
+    private lateinit var colorList: List<Int>
+    private lateinit var dateList: MutableList<String>
+
+    private lateinit var calendar: Calendar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +38,7 @@ class WeekFragment : Fragment() {
     ): View? {
 
         binding = FragmentWeekBinding.inflate(inflater)
+        calendar = Calendar()
         colorList = listOf(
             ContextCompat.getColor(requireContext(), R.color.cr_sun),
             ContextCompat.getColor(requireContext(), R.color.cr_mon),
@@ -42,30 +48,42 @@ class WeekFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.cr_fri),
             ContextCompat.getColor(requireContext(), R.color.cr_sat),
         )
+        binding.apply {
+            leftBtn.setOnClickListener {
+                leftClick()
+            }
+            rightBtn.setOnClickListener {
+                rightClick()
+            }
+        }
         calArray = mutableListOf()
-        dateList = mutableListOf()
+        dateList = calendar.getWeekDateList() as MutableList<String>
 
-        val customBarChartRender = CustomBarChartRender(binding.chartWeek,binding.chartWeek.animator,binding.chartWeek.viewPortHandler)
+        val customBarChartRender = CustomBarChartRender(
+            binding.chartWeek,
+            binding.chartWeek.animator,
+            binding.chartWeek.viewPortHandler
+        )
         binding.chartWeek.renderer = customBarChartRender
 
         initBar()
         return binding.root
     }
 
-    fun getDBallData()
-    {
+    private fun getDBallData(data : List<String>) {
         val appDataBase = com.shino72.waterplant.db.AppDataBase.getInstance(requireContext())
+        dateList = mutableListOf()
         CoroutineScope(Dispatchers.Default).launch {
             val dao = appDataBase?.PlantDao()
-            val data = Calendar().getDateList()
+            binding.drinkTv.text = data.startToEnd()
             dateList.addAll(data)
+            calArray = mutableListOf()
             data.forEachIndexed { index, s ->
                 val splitS = s.split("-")
                 val rtc = dao?.getSingleCal(splitS[0], splitS[1], splitS[2])
                 if (rtc != null) {
                     calArray.add(BarEntry(index.toFloat(), rtc.Size.toFloat()))
-                }
-                else calArray.add(BarEntry(index.toFloat(), 0f))
+                } else calArray.add(BarEntry(index.toFloat(), 0f))
             }
             val set = BarDataSet(calArray, "내용없음")
                 .apply {
@@ -79,6 +97,7 @@ class WeekFragment : Fragment() {
             val dataSets = mutableListOf<IBarDataSet>()
             dataSets.add(set)
 
+
             val datas = BarData(dataSets)
                 .apply {
                     setValueTextSize(10f)
@@ -86,11 +105,67 @@ class WeekFragment : Fragment() {
                 }
 
             binding.chartWeek.data = datas
+
+            binding.chartWeek.notifyDataSetChanged();
+            binding.chartWeek.invalidate();
         }
     }
 
-    fun initBar()
+    private fun rightClick() {
+        val nowDate = calendar.nowDate()
+        val statusDate = binding.drinkTv.text.split(" ~ ")
+        if (!(dateCompare(statusDate[1], nowDate))){
+            calendar.setCal(statusDate[0])
+            calendar.moveRightWeek()
+
+            dateList = calendar.getWeek() as MutableList<String>
+
+            binding.drinkTv.text = dateList.startToEnd()
+            initBar()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun leftClick()
     {
+        val statusDate = binding.drinkTv.text.split(" ~ ")
+
+        calendar.setCal(statusDate[0])
+        calendar.moveLeftWeek()
+
+        dateList = calendar.getWeek() as MutableList<String>
+
+        binding.drinkTv.text = dateList.startToEnd()
+        initBar()
+    }
+
+    // d1 > d2이면 true 반대면 false
+    private fun dateCompare(d1 : String, d2 : String) : Boolean
+    {
+        val d1s = d1.split("-").map { it.toInt() }
+        val d2s = d2.split("-").map { it.toInt() }
+
+        when
+        {
+            d1s[0] > d2s[0] -> return true
+            d1s[0] < d2s[0] -> return false
+            d1s[1] > d2s[1] -> return true
+            d1s[1] < d2s[1] -> return false
+            d1s[2] > d1s[2] -> return true
+            d1s[2] < d2s[2] -> return false
+            else -> return true
+        }
+    }
+    private fun List<String>.startToEnd() : String {
+        return if(this.size >= 2) this.first() +" ~ " +  this.last() else ""
+    }
+
+    private fun initBar()
+    {
+        // 마커 설정
+        getDBallData(dateList)
+        setCustomMarkerView()
+
         binding.chartWeek.run {
             setDrawBarShadow(true) // 그래프 그림자
             setDrawValueAboveBar(true) // 입력?값이 차트 위or아래에 그려질 건지 (true=위, false=아래)
@@ -133,15 +208,14 @@ class WeekFragment : Fragment() {
             animateY(1500) // y축 애니메이션
             animateX(1000) // x축 애니메이션
 
-            // 마커 설정
-
-            val markerView= CustomMarkerView(requireContext(), layout = R.layout.marker_view, dateList)
-            markerView.chartView = binding.chartWeek
-            this.marker = markerView
         }
+    }
 
-        getDBallData()
-
+    private fun setCustomMarkerView()
+    {
+        val markerView= CustomMarkerView(requireContext(), layout = R.layout.marker_view, dateList)
+        markerView.chartView = binding.chartWeek
+        binding.chartWeek.marker = markerView
     }
     class LabelCustomFormatter : ValueFormatter() {
         private var index = 0
