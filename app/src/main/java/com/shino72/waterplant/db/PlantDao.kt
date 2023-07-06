@@ -14,6 +14,8 @@ public interface PlantDao{
     @Query("SELECT * FROM 'PlantPicture' WHERE uid=:uid ")
     suspend fun loadSingleData(uid: String) : PlantPicture?
 
+    @Query("SELECT SUM(Size) FROM 'Calendar' WHERE (Year =:year AND Month =:month) AND (Day >=:startD AND Day <=:endD)")
+    suspend fun getWeekSize(year : String, month: String, startD: String, endD:String) : String
     @Query("SELECT * FROM 'Calendar'")
     suspend fun getAllCal() : List<Calendar>
 

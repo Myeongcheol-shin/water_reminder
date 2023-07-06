@@ -70,6 +70,7 @@ class WeekFragment : Fragment() {
         return binding.root
     }
 
+
     private fun getDBallData(data : List<String>) {
         val appDataBase = com.shino72.waterplant.db.AppDataBase.getInstance(requireContext())
         dateList = mutableListOf()
@@ -178,7 +179,6 @@ class WeekFragment : Fragment() {
             xAxis.run { // 아래 라벨 x축
                 isEnabled = true // 라벨 표시 설정
                 valueFormatter = LabelCustomFormatter()
-
                 position = XAxis.XAxisPosition.BOTTOM // 라벨 위치 설정
                 setDrawGridLines(false) // 격자구조
                 granularity = 1f // 간격 설정

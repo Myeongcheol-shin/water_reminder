@@ -21,6 +21,14 @@ class Calendar {
         cal = tmpCal
         return rt
     }
+    fun moveLeftMonth()
+    {
+        cal.add(Calendar.MONTH,-1)
+    }
+    fun moveRighttMonth()
+    {
+        cal.add(Calendar.MONTH,1)
+    }
 
     fun moveLeftWeek()
     {
@@ -60,7 +68,12 @@ class Calendar {
         cal.add(Calendar.DATE, -nw + 1)
         return dateFormat.format(cal.time)
     }
-
+    fun getCal() : Calendar {
+        return cal
+    }
+    fun getCalDateFormat() : String{
+        return dateFormat.format(cal.time)
+    }
     fun nowDate() : String {
         return dateFormat.format(Calendar.getInstance().time)
     }
