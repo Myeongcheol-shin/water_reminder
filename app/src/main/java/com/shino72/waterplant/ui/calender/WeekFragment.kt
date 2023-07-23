@@ -39,6 +39,7 @@ class WeekFragment : Fragment() {
 
         binding = FragmentWeekBinding.inflate(inflater)
         calendar = Calendar()
+        calendar.resetCal()
         colorList = listOf(
             ContextCompat.getColor(requireContext(), R.color.cr_sun),
             ContextCompat.getColor(requireContext(), R.color.cr_mon),
@@ -56,7 +57,7 @@ class WeekFragment : Fragment() {
                 rightClick()
             }
         }
-        calArray = mutableListOf()
+        println(calendar.getCalDateFormat())
         dateList = calendar.getWeekDateList() as MutableList<String>
 
         val customBarChartRender = CustomBarChartRender(

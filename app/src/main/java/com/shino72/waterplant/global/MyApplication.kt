@@ -72,18 +72,9 @@ class MyApplication : Application() {
             db!!.PlantDao().deleteAll()
             db!!.PlantDao().insertDB(
                 PlantPicture(
-                    name = "꼬치",
+                    name = "해봐라기",
                     image1 = (getDrawable(R.drawable.icon_seed) as BitmapDrawable).bitmap,
                     image2 = (getDrawable(R.drawable.icon_plant) as BitmapDrawable).bitmap,
-                    image3 = (getDrawable(R.drawable.icon_not_rose) as BitmapDrawable).bitmap,
-                    image4 = (getDrawable(R.drawable.icon_rose) as BitmapDrawable).bitmap
-                )
-            )
-            db!!.PlantDao().insertDB(
-                PlantPicture(
-                    name = "꼬치2",
-                    image2 = (getDrawable(R.drawable.icon_seed) as BitmapDrawable).bitmap,
-                    image1 = (getDrawable(R.drawable.icon_plant) as BitmapDrawable).bitmap,
                     image3 = (getDrawable(R.drawable.icon_not_rose) as BitmapDrawable).bitmap,
                     image4 = (getDrawable(R.drawable.icon_rose) as BitmapDrawable).bitmap
                 )

@@ -44,7 +44,6 @@ class PlantListAdapter : RecyclerView.Adapter<PlantListAdapter.PlantListViewHold
     inner class PlantListViewHolder(private val binding: ItemCbBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(item: Plant, position: Int) {
             val checkBox = binding.itemCb
-            val deleteBtn = binding.deleteBtn
             binding.nameTv1.text = item.name
             checkBox.isChecked = position == mSelectedItem
 
@@ -80,11 +79,6 @@ class PlantListAdapter : RecyclerView.Adapter<PlantListAdapter.PlantListViewHold
                 itemClickListner.onClick(it,item, position)
                 notifyItemRangeChanged(0, items.size)
             }
-            deleteBtn.setOnClickListener {
-                itemClickListner.onClick(it,item, position)
-                notifyItemRangeChanged(0, items.size)
-            }
-
         }
     }
 

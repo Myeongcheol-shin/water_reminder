@@ -3,6 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"
+        android:id="@+id/tv"
+        android:text="식물 선택"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <androidx.appcompat.widget.AppCompatButton
         android:layout_margin="10dp"
         android:id="@+id/cancel_button"
@@ -14,21 +24,10 @@
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:background="@drawable/icon_cancel" />
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:id="@+id/add_btn"
-        android:textSize="15sp"
-        android:text="식물을 추가하려면 눌러주세요"
-        app:layout_constraintTop_toBottomOf="@id/cancel_button"
-        android:background="@drawable/background_add_btn"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"/>
     <androidx.recyclerview.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@+id/tv"
         android:layout_marginTop="5dp"
         android:id="@+id/rc"
-        app:layout_constraintTop_toBottomOf="@+id/add_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

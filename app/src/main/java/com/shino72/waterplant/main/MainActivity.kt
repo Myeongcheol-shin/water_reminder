@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
+import androidx.compose.ui.geometry.Size
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -146,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 prefs.setName(nameValue)
                 viewModel.valueChange()
             }
+            binding.plantNameTv.text = nameValue
             dialog.dismiss()
         }
     }
@@ -305,23 +307,17 @@ class MainActivity : AppCompatActivity() {
                         MyApplication.pref.setSelectedId(cbItem.id)
                         reLoadImage(progress = viewModel.wave.value!!)
                     }
-
-                    R.id.delete_btn -> {
-                        plantListAdapter.notifyItemRangeRemoved(0, plantList.size);
-                        Toast.makeText(applicationContext, position.toString(), Toast.LENGTH_SHORT)
-                            .show()
-                        plantListAdapter.notifyItemRangeChanged(0, plantList.size - 1)
-                        plantList.remove(cbItem)
-                    }
                 }
             }
         })
-
+        /*
         val addBtn = plantContentView.findViewById<AppCompatButton>(R.id.add_btn)
         addBtn.setOnClickListener {
             val intent = Intent(this, PaintActivity::class.java)
             startActivity(intent)
         }
+
+         */
     }
 
     private fun updateWaterDB(water : Int) {
@@ -330,10 +326,11 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val data = AppDataBase!!.PlantDao().getSingleCal(nowDate[0], nowDate[1], nowDate[2])
             if(data == null){
-                AppDataBase!!.PlantDao().insertWaterAll(com.shino72.waterplant.db.Calendar(Year = nowDate[0].toInt(), Month = nowDate[1].toInt(), Day = nowDate[2].toInt(), water))
+                AppDataBase!!.PlantDao().insertWaterAll(com.shino72.waterplant.db.Calendar(Year = nowDate[0].toInt(), Month = nowDate[1].toInt(), Day = nowDate[2].toInt(), Size = water))
             }
             else{
-                AppDataBase!!.PlantDao().updateCal(com.shino72.waterplant.db.Calendar(Year = nowDate[0].toInt(), Month = nowDate[1].toInt(), Day = nowDate[2].toInt(), water))
+                data.Size = water
+                AppDataBase!!.PlantDao().updateCal(data)
             }
         }
     }

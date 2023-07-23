@@ -25,10 +25,10 @@ public interface PlantDao{
     @Update
     suspend fun updateCal(cal:Calendar)
     // 삽입 하기
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDB(plant: PlantPicture)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWaterAll(cal : Calendar)
 
     // 삭제 하기

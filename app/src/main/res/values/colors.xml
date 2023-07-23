@@ -20,4 +20,6 @@
     <color name="cr_fri">#63B4F5</color>
     <color name="cr_sat">#7A84CC</color>
     <color name="cr_sun">#AA46BD</color>
+    <color name="gray">#ADADAD</color>
+
 </resources>
