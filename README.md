@@ -9,8 +9,10 @@ You can record the amount of water you drank, and you can check the amount of wa
 * Calendar : You can check the data of drinking water by month, week, and day.
 
 ## ScreenShot
-![image](https://github.com/Myeongcheol-shin/waterplant/assets/82868004/40a54200-b5ed-4da3-9ac0-03b16ad81f98)
-![image](https://github.com/Myeongcheol-shin/waterplant/assets/82868004/b84c9569-e5ff-4177-bd48-a4f2d2b0abb2)
-![image](https://github.com/Myeongcheol-shin/waterplant/assets/82868004/f7a0992e-d2f0-4e04-a445-11da0b7a0d20)
-
-
+<p align="center">
+  <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/9f6356de-c61e-499b-b907-c432f78965e0" align="center" width="25%">
+  <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/5385a175-bdcb-4f7c-ac7c-30911344bc17" align="center" width="25%">
+  <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/57b7ccbd-2b92-45a9-9287-76c83895c638" align="center" width="25%">
+  <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/07699ebd-e695-44bb-8a87-52d2e3f7eea0" align="center" width="25%">
+  <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/de8e91f6-22de-4c87-be9f-34deb8bf0750" align="center" width="25%">
+</p>
