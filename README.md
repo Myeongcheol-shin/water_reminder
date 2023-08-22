@@ -8,6 +8,10 @@ You can record the amount of water you drank, and you can check the amount of wa
 * character : There are four cute characters. I have plans to add more characters in the future.
 * Calendar : You can check the data of drinking water by month, week, and day.
 
+## Gif
+![화면 기록 2023-08-22 오후 3 20 03](https://github.com/Myeongcheol-shin/water_reminder/assets/82868004/fc6d2392-3a35-4d19-91bd-4b6f1cad8c1d)
+
+
 ## ScreenShot
 <p align="center">
   <img src="https://github.com/Myeongcheol-shin/waterplant/assets/82868004/9f6356de-c61e-499b-b907-c432f78965e0" align="center" width="25%">
